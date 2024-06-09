@@ -14,6 +14,8 @@ import (
 
 	"github.com/bootdotdev/learn-cicd-starter/internal/database"
 
+	"time"
+
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
 )
 
@@ -87,10 +89,12 @@ func main() {
 
 	v1Router.Get("/healthz", handlerReadiness)
 
-	router.Mount("/v1", v1Router)
+	timeout := 10 * time.Second
+
 	srv := &http.Server{
-		Addr:    ":" + port,
-		Handler: router,
+		Addr:              ":" + port,
+		Handler:           router,
+		ReadHeaderTimeout: timeout, // Added line
 	}
 
 	log.Printf("Serving on port: %s\n", port)
